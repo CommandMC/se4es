@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?fileVersion 4.0.0?><cproject storage_type_id="org.eclipse.cdt.core.XmlProjectDescriptionStorage">
+	<storageModule moduleId="org.eclipse.cdt.core.settings">
+		<cconfiguration id="org.aspectc.acdt.toolchain.linux.chain.1151297163">
+			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="org.aspectc.acdt.toolchain.linux.chain.1151297163" moduleId="org.eclipse.cdt.core.settings" name="Debug">
+				<externalSettings/>
+				<extensions>
+					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
+					<extension id="org.eclipse.cdt.core.GLDE" point="org.eclipse.cdt.core.ErrorParser"/>
+				</extensions>
+			</storageModule>
+			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+				<configuration buildProperties="" id="org.aspectc.acdt.toolchain.linux.chain.1151297163" name="Debug" parent="org.eclipse.cdt.build.core.emptycfg">
+					<folderInfo id="org.aspectc.acdt.toolchain.linux.chain.1151297163.816077555" name="/" resourcePath="">
+						<toolChain id="org.aspectc.acdt.toolchain.linux.chain.848889240" name="ACDT Toolchain for Linux" superClass="org.aspectc.acdt.toolchain.linux.chain">
+							<targetPlatform id="org.aspectc.acdt.toolchain.chain.linux.target.897914571" isAbstract="false" name="Target" osList="linux,hpux,aix,qnx" superClass="org.aspectc.acdt.toolchain.chain.linux.target"/>
+							<builder id="org.aspectc.acdt.toolchain.chain.linux.builder.1530176998" managedBuildOn="false" name="ACDT Builder.Debug" superClass="org.aspectc.acdt.toolchain.chain.linux.builder"/>
+							<tool id="org.aspectc.acdt.toolchain.chain.linux.compiler.765879039" name="ACDT Compiler" superClass="org.aspectc.acdt.toolchain.chain.linux.compiler">
+								<option id="org.aspectc.acdt.toolchain.compiler.incpath.1647994115" name="IncludePath" superClass="org.aspectc.acdt.toolchain.compiler.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/sus}&quot;"/>                                                        
+									<listOptionValue builtIn="false" value="/usr/msp430/include/"/>                                                                     
+								</option>
+								<inputType id="org.aspectc.acdt.toolchain.input.882629896" name="Compiler Input" superClass="org.aspectc.acdt.toolchain.input"/>
+							</tool>
+							<tool id="org.aspectc.acdt.acdttoolchain.chain.linux.linker.1118735386" name="ACDT Linker" superClass="org.aspectc.acdt.acdttoolchain.chain.linux.linker">
+								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1430300190" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
+									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
+									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
+								</inputType>
+							</tool>
+							<tool id="org.aspectc.acdt.acdttoolchain.chain.linux.compiler.cdt.1987834801" name="CDT Compiler" superClass="org.aspectc.acdt.acdttoolchain.chain.linux.compiler.cdt"/>
+							<tool id="org.aspectc.acdt.acdttoolchain.chain.linux.linker.cdt.1934621008" name="CDT Linker" superClass="org.aspectc.acdt.acdttoolchain.chain.linux.linker.cdt"/>
+						</toolChain>
+					</folderInfo>
+				</configuration>
+			</storageModule>
+			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+		</cconfiguration>
+	</storageModule>
+	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
+		<project id="sus.null.903042449" name="sus"/>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
+	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
+		<buildTargets>
+			<target name="wsim" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>wsim</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+		</buildTargets>
+	</storageModule>
+</cproject>

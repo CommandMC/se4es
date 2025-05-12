@@ -1,0 +1,31 @@
+#ifndef SHOW_PANIC_AH
+#define SHOW_PANIC_AH
+
+/* Aspekt um bei einer Panik etwas im Display anzuzeigen */
+
+#include "machine/lcd.h"
+#include "machine/standby.h"
+#include <msp430.h>
+
+aspect PanicOnDisplay {
+  advice execution("void Panic::panic_hook(...)") && args(type)
+    : around (unsigned int type) {
+    /* Panik-Code in der unteren Zeile anzeigen */
+    /* >8000 ist Panic Type sonst unbelegte Slot/Vektor-Nummer */
+    LCD::instance().clear();
+    LCD::instance().show_number(type, LCD::Line::LOWER);
+
+    // "off" in der oberen Zeile anzeigen
+    LCDM2 = 0xC6;
+    LCDM3 = 0x17;
+    LCDM4 = 0x17;
+
+    /* Bei Knopfdruck in BSL springen */
+    while (1) {
+      StandbyMode::instance().prologue();
+    }
+  }
+};
+
+#endif
+

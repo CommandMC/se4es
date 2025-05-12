@@ -1,0 +1,123 @@
+#!/bin/bash
+#
+# This wrapper sets the gdb port to the userid of the caller
+#
+
+WSIM_DIR=`dirname $0` # script directory
+
+OSNAME=$(uname -s)
+case "$OSNAME" in
+  Darwin)
+    findNextFreePort() {
+      export PORT=$1
+      IN_USE=$(netstat -an -p tcp | awk '{ print $4 }' | grep -e "\.$PORT$")
+      while [ "$IN_USE" != "" ]; do
+        PORT=`expr $PORT + 1`
+        IN_USE=$(netstat -an -p tcp | awk '{ print $4 }' | grep -e "\.$PORT$")
+      done
+      echo $PORT
+      unset PORT
+    }
+
+    waitForWsnet1() {
+      while [ $(lsof -n -i UDP -a -u $UID -c wsnet1 | wc -l) = "0" ]; do sleep 0.1; done
+    }
+
+    getWsnet1Port() {
+        lsof -nP -iUDP -a -u $UID -c wsnet1 | awk '{ print $9 }' | awk -F ":" '{print $NF}' | grep -v NAME
+    }
+    ;;
+  *)
+    findNextFreePort() {
+      PORT=$1
+      IN_USE=`ss -tan | awk '{ print $4 }' | grep :$PORT`
+      while [ "$IN_USE" != "" ]; do
+        PORT=`expr $PORT + 1`
+        IN_USE=`ss -tan | awk '{ print $4 }' | grep :$PORT`
+      done
+      echo $PORT
+    }
+
+    waitForWsnet1() {
+      while [ $(ss -ulpne | grep wsnet1 | grep -c uid:$UID) = "0" ]; do sleep 0.1; done
+    }
+
+    getWsnet1Port() {
+        ss -ulpne | grep wsnet1 | grep uid:$UID | cut -d':' -f2 | cut -d' ' -f1
+    }
+    ;;
+esac
+
+ARGUMENTS[0]="--ui" # start user-interface by default
+ARGUMENTS[1]="--msp430_adc12=11:${WSIM_DIR}/adcvalue"
+# ARGUMENTS[2]="--realtime" # this option reduces CPU load for 100% to 20% FIXME: combination with --wsnet1
+i=2
+
+for arg in "$@"; do # "$@" preserves spaces
+  if [ $arg = "--mode=gdb" ]; then
+    # find next free port
+    GDB_PORT=$(findNextFreePort 2159)
+    echo "gdb: listening on port $GDB_PORT"
+    ARGUMENTS[$i]="--mode=gdb"
+    ARGUMENTS[$i+1]="--modearg=$GDB_PORT"
+    i=$i+1
+  elif [ $arg = "--wsnet1" ]; then
+    # generate node id based on the number of running wsims
+    # the 'ps ww' is REALLY important, as ps otherwise truncates its output to terminal size
+    NODE_ID=$(ps wwux | grep "wsim" | grep -v "grep" | grep "node-id" | grep -c "ui")
+    if [ "$NODE_ID" -gt 0 ]; then
+      #increment the node_id of the highest running wsim instance
+      NODE_ID=$(ps wwux | grep "wsim" | grep -v "grep" | grep "node-id" | sed 's/^.*--node-id= *\([0-9]*\).*$/\1/' | sort -nr | head -n1)
+    fi
+    NODE_ID=`expr $NODE_ID + 1`
+    # test if the user is already running a wsnet1 server
+    WSNET_RUNNING=$(ps wwux | grep wsnet1 | grep -v "grep" | grep -v "elf")
+    if [ "${#WSNET_RUNNING}" -eq 0 ] ; then
+       # -p 0 allocates a random free port; -P (multicast port is not set explicitly)
+       nice wsnet1 -p 0 > /dev/null &
+       # wait until port is open
+       waitForWsnet1
+    fi
+    # get wsnet1 port of the running instance
+    SERVER_PORT=$(getWsnet1Port)
+    ARGUMENTS[$i]="--wsnet1"
+    ARGUMENTS[$i+1]="--server-port=$SERVER_PORT"
+    ARGUMENTS[$i+2]="--node-id=$NODE_ID"
+    ARGUMENTS[$i+3]="--preload=$$.hex" # $$ is this process' id
+    i=$i+3
+    #--
+    # generate preload ihex file
+    PROCESS_ID=$$
+    KEY=""
+    num=0
+    while [ $num -lt 4 ]
+    do
+      if [ $PROCESS_ID -gt 0  ]; then
+        TWOBYTES=$(($PROCESS_ID % 100))
+        if [ $TWOBYTES -lt 10 ]; then
+          KEY="0"${TWOBYTES}" "${KEY}
+        else
+          KEY=${TWOBYTES}" "${KEY}
+        fi
+        PROCESS_ID=$(( $PROCESS_ID / 100 ))
+      else
+        KEY="00 "${KEY}
+      fi
+      num=$(( $num + 1 ))
+    done
+    echo @1800 $KEY q | srec_cat - -Texas_Instrument_TeXT -Output -Intel | grep "1800" | grep $$ > $$.hex
+    #--
+  else
+    ARGUMENTS[$i]="$arg"
+  fi
+  i=$i+1
+done
+
+nice wsim-ez430chronos ${ARGUMENTS[@]}
+
+# remove preload hex file if exists
+if [ -e $$.hex ]; then
+  rm $$.hex
+fi
+
+exit

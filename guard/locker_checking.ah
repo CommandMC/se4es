@@ -1,0 +1,40 @@
+#ifndef LOCKER_CHECKING_AH
+#define LOCKER_CHECKING_AH
+
+#include "device/panic.h"
+
+aspect LockerChecking {
+
+  advice execution("void Locker::enter()") : before () {
+    /* Panik, wenn "lock" schon gesetzt ist */
+    if (tjp->that()->avail() == false)
+      Panic::instance().panic(PANIC_DOUBLEENTER);
+  }
+
+  advice execution("void Locker::retne()") : before () {
+    /* Panik, wenn "lock" nicht gesetzt ist */
+    if (tjp->that()->avail() == true)
+      Panic::instance().panic(PANIC_DOUBLERETNE);
+  }
+
+};
+
+aspect LockerCheckingBeforeMain {
+
+  bool main_started; /* true, wenn main() erstmalig betreten wurde */
+
+  LockerCheckingBeforeMain() : main_started(false) {}
+
+  advice execution("% main(...)") : before() {
+    main_started = true;
+  }
+
+  advice execution("void Locker::%(...)") : before () {
+    /* Panik, wenn der Locker vor main() benutzt wird */
+    if (main_started == false)
+      Panic::instance().panic(PANIC_LOCKSTARTUP);
+  }
+
+};
+
+#endif

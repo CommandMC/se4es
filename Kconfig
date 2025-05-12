@@ -1,0 +1,47 @@
+menu "Basissystem"
+	config CPU_FREQUENCY
+		int "CPU-Taktfrequenz"
+		default 12000000
+		help
+			CPU-Frequenz in Hz. Der FLL-Multiplikator wird aus diesem Wert berechnet.
+	choice
+		prompt "Unterstützte Hardwareversion"
+		default ANY_PCB
+		config BLACK_PCB
+			bool "Schwarze Platine"
+			help
+				Es werden nur Treiber für Chronos-Uhren mit schwarzer Platine übersetzt.
+		config WHITE_PCB
+			bool "Weiße Platine"
+			help
+				Es werden nur Treiber für Chronos-Uhren mit weißer Platine übersetzt.
+		config ANY_PCB
+			bool "Beliebige Platine"
+			help
+				Es werden Treiber für Chronos-Uhren mit schwarzer und weißer Platine
+				übersetzt.
+	endchoice
+endmenu
+
+menu "Debughilfen"
+	config DEBUG_PANIC
+		bool "Panik-Anzeige auf dem Display"
+		depends on ASPECTS
+		default y
+		help
+			Zeigt auf dem Display der eZ430 Chronos Watch einen Fehlercode an,
+			wenn das Betriebssystem abstuerzt.
+
+	config DEBUG_GUARD
+		bool "Guard enter/leave-Aufrufe pruefen"
+		depends on ASPECTS
+		default y
+		help
+			Zeigt an, ob die Interruptsynchronisation falsch benutzt wird.
+
+	config ASPECTS
+		bool "Aspekte verwenden"
+		default y
+		help
+			Aktiviert die Uebersetzung mit AspectC++.
+endmenu

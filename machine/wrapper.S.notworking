@@ -1,0 +1,61 @@
+        ;; Wrapper zum Aufruf des Guardian bei einem Interrupt
+
+.extern guardian
+
+.section .text
+
+        ;; Fuer alle Vektornummern kleine Sprungkissenfunktionen instantiieren
+
+        .macro  wrapper num vec
+        .global vector_ff\vec
+vector_ff\vec :
+        push    r15
+        mov     #\num, r15
+        jmp     wrapper_body
+        .endm
+
+        ;; FIXME: Copy&Paste ist unschoen, kann man das irgendwie mit .irp hinbiegen?
+
+        wrapper  0 da
+        wrapper  1 dc
+        wrapper  2 de
+        wrapper  3 e0
+        wrapper  4 e2
+        wrapper  5 e4
+        wrapper  6 e6
+        wrapper  7 e8
+        wrapper  8 ea
+        wrapper  9 ec
+        wrapper 10 ee
+        wrapper 11 f0
+        wrapper 12 f2
+        wrapper 13 f4
+        wrapper 14 f6
+        wrapper 15 f8
+        wrapper 16 fa
+        wrapper 17 fc
+
+        ;; Als zusaetzliche Paranoia noch ein Wrapper fuer sonstige Interruptvektoren:
+.global _unexpected_
+_unexpected_:
+        push    r15
+        mov     #0xdead, r15
+        jmp     wrapper_body
+        
+        ;; Gemeinsamer Body, der guardian aufruft
+wrapper_body:
+        ;; Restliche Register sichern, die eine C-Routine nicht sichern wuerde
+        push    r14
+        push    r13
+        push    r12
+
+        call    #guardian        ; guardian(r15)
+
+        pop     r12
+        pop     r13
+        pop     r14
+        pop     r15
+        bic     #0xf0, 0(r1)    ; Low-Power-Modus-Bits im Statusregister auf dem Stack
+                                ; zuruecksetzen
+        nop                     ; CPU-Erratum-Workaround
+        reti

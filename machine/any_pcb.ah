@@ -1,0 +1,12 @@
+#ifndef __ANY_PCB__AH__
+#define __ANY_PCB__AH__
+
+aspect AnyPCB {
+
+    pointcut tpsensor_instance() = "TPSensor &TPSensor::instance()";
+
+    // Nothing to do
+
+};
+
+#endif  //!__ANY_PCB__AH__

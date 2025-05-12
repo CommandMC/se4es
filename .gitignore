@@ -1,0 +1,11 @@
+.dep/
+.idea/
+.vscode/
+build/
+
+wsim.log
+wsim.trc
+wsnet1.trc
+.config.old
+scripts/wsim_updater/wsim_version.txt
+scripts/wsim_updater/bin/

@@ -1,0 +1,38 @@
+ChronosTool.py
+Tool for programming TI eZ430-Chronos watches
+
+Features:
+	- Full support for rfbsl "over the air" updates
+	- Sync time with local clock
+	- Limited device auto detection
+
+Todo:
+	- Make output less verbose
+	- Sync protocol reading features, f.e. acceleration data streaming
+	- Implement error recovery (Section 3.6.3.3 of the eZ430-Chronos
+	  Development Tool User's Guide)
+
+Changelog:
+	0.1 - public preview version
+	0.2 - import rewritten
+	    - sync time accuracy fix
+	0.3 - verbosity option
+	    - noreset option
+	    - acceleration data streaming
+
+Example:
+	./ChronosTool.py -d /dev/ttyACM3 prg eZChronos.txt
+
+Ressources:
+	- More info on the TI eZ430-Chronos:
+	  http://processors.wiki.ti.com/index.php/EZ430-Chronos
+
+	- OpenChronos, msp430-gcc-friendly TI firmware clone:
+	  https://github.com/poelzi/OpenChronos
+
+	- mspdebug, open-source debugger and programmer for the eZ430U:
+	  http://mspdebug.sourceforge.net/
+
+	- How to install the MSP430 toolchain under MAC OS X:
+	  http://www.senslab.info/?p=425
+	  (MacPorts version works fine for me.)

@@ -1,0 +1,32 @@
+#ifndef __BLACK_PCB__AH__
+#define __BLACK_PCB__AH__
+
+#include "machine/tp_sensor.h"
+#include "machine/generic_scp1000.h"
+#include "machine/cma3000.h"
+#include "machine/board.h"
+
+aspect BlackPCB {
+
+    pointcut tpsensor_instance() = "TPSensor &TPSensor::instance()";
+    pointcut accelsensor_instance() = "AccelSensor &AccelSensor::instance()";
+    pointcut board_revision() = "static % Board::getRevision()";
+
+    advice execution(tpsensor_instance()) : around() {
+        static GenericSCP1000 scp;
+        scp.init();
+        *tjp->result() = &scp;
+    }
+
+    advice execution(accelsensor_instance()) : around() {
+        static CMA3000 cma;
+        cma.plugin();
+        *tjp->result() = &cma;
+    }
+
+    advice execution(board_revision()) : around() {
+        *tjp->result() = Board::Revision::Black;
+    }
+};
+
+#endif  //!__BLACK_PCB__AH__

@@ -1,0 +1,32 @@
+#ifndef __WHITE_PCB__AH__
+#define __WHITE_PCB__AH__
+
+#include "machine/tp_sensor.h"
+#include "machine/generic_bmp085.h"
+#include "machine/bma250.h"
+#include "machine/board.h"
+
+aspect WhitePCB {
+
+    pointcut tpsensor_instance() = "TPSensor &TPSensor::instance()";
+    pointcut accelsensor_instance() = "AccelSensor &AccelSensor::instance()";
+    pointcut board_revision() = "static % Board::getRevision()";
+
+    advice execution(tpsensor_instance()) : around() {
+        static GenericBMP085 bmp;
+        bmp.init();
+        *tjp->result() = &bmp;
+    }
+
+    advice execution(accelsensor_instance()) : around() {
+        static BMA250 bma;
+        bma.plugin();
+        *tjp->result() = &bma;
+    }
+
+    advice execution(board_revision()) : around() {
+        *tjp->result() = Board::Revision::White;
+    }
+};
+
+#endif  //!__WHITE_PCB__AH__
