@@ -18,11 +18,13 @@
 // Hier sollten die Includes der eigenen Thread-Headerfiles ergaenzt werden
 #include "user/examplethread.h"
 #include "user/buttonservice.h"
+#include "user/clicker.h"
 
 /* Threads beim Scheduler anmelden */
 static void ready_threads() {
   Guarded_Organizer::instance().ready(ExampleThread::instance());
   Guarded_Organizer::instance().ready(ButtonService::instance());
+  Guarded_Organizer::instance().ready(ClickerThread::instance());
 }
 
 int main() {
