@@ -3,7 +3,7 @@
 
 #include "syscall/thread.h"
 
-class ExampleThread : public UserThread<512> { // 512 Byte Stack
+class ExampleThread : public UserThread<64> {
 public:
   /* Die Methode action() ist der Einstiegspunkt des Threads */
   void action();

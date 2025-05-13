@@ -3,7 +3,7 @@
 
 #include "syscall/thread.h"
 
-class Pressure2Altitude : public UserThread<512> {
+class Pressure2Altitude : public UserThread<128> {
 public:
     [[noreturn]] void action() override;
 
