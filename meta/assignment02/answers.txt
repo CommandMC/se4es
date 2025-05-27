@@ -1,0 +1,19 @@
+# 1
+
+n=6
+fixed point:
+  result: 1754
+  time: 24ms
+
+floating point:
+  result: 1657
+  time: 25ms
+
+n=12
+fixed point:
+  result: 1645
+  time: 23ms
+
+floating point:
+  result: 1657
+  time: 25ms
