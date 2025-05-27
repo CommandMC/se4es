@@ -19,14 +19,16 @@
 #include "user/examplethread.h"
 #include "user/buttonservice.h"
 // #include "user/clicker.h"
-#include "user/pressure2altitude.h"
+// #include "user/pressure2altitude.h"
+#include "user/fp_test_thread.h"
 
 /* Threads beim Scheduler anmelden */
 static void ready_threads() {
   Guarded_Organizer::instance().ready(ExampleThread::instance());
   Guarded_Organizer::instance().ready(ButtonService::instance());
   // Guarded_Organizer::instance().ready(ClickerThread::instance());
-  Guarded_Organizer::instance().ready(Pressure2Altitude::instance());
+  // Guarded_Organizer::instance().ready(Pressure2Altitude::instance());
+  Guarded_Organizer::instance().ready(FPTestThread::instance());
 }
 
 int main() {
