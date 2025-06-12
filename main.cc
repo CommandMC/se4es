@@ -22,6 +22,7 @@
 // #include "user/pressure2altitude.h"
 // #include "user/fp_test_thread.h"
 #include "user/pastthread.h"
+#include "user/burst.h"
 
 /* Threads beim Scheduler anmelden */
 static void ready_threads() {
@@ -31,6 +32,7 @@ static void ready_threads() {
   // Guarded_Organizer::instance().ready(Pressure2Altitude::instance());
   // Guarded_Organizer::instance().ready(FPTestThread::instance());
   Guarded_Organizer::instance().ready(PASTThread::instance());
+  Guarded_Organizer::instance().ready(BurstService::instance());
 }
 
 int main() {
