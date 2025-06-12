@@ -13,7 +13,10 @@
 #include "device/panic.h"
 #include "guard/guard.h"
 #include "thread/scheduler.h"
+#include "machine/timer.h"
 
+
+unsigned long Scheduler::idle_time = 0;
 
 void Scheduler::ready(Entrant &proc) {
   if (&proc == active())
@@ -52,14 +55,22 @@ void Scheduler::exit() {
 
     /* Idlen, bis das Flag zurueckgesetzt wurde oder */
     /* ein Folgethread in der Queue steht            */
+    int temp_idle_time = 0;
     while (idling) {
       /* Pruefen, ob ein Folgethread existiert */
       e = static_cast<Entrant *>(processqueue.dequeue());
       if (e != NULL)
         break;
 
+      // Zeitmessung starten
+      Timer::start();
+
       /* Idlen - schaltet Interrupts wieder frei */
       CPU::idle();
+
+      // Zeitmessung beenden
+      Timer::stop();
+      temp_idle_time += Timer::getcycles();
 
       /* Interrupts wieder sperren - wegen freiem Guard */
       /* wurden alle Epiloge hier schon abgearbeitet    */
@@ -68,6 +79,7 @@ void Scheduler::exit() {
       if (!idling)
         e = static_cast<Entrant *>(active());
     }
+    idle_time = temp_idle_time;
 
     idling = false;
 
@@ -103,4 +115,9 @@ void Scheduler::resume() {
   // Sollte niemals NULL sein, da gerade etwas in die Queue gelegt wurde
 
   dispatch(*e);
+}
+
+// Gibt Idle-Time zurück.
+unsigned long Scheduler::getIdleTime() {
+    return idle_time;
 }

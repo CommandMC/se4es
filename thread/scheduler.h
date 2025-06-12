@@ -23,6 +23,7 @@ private:
   Queue processqueue;
 
   volatile bool idling;
+  static unsigned long idle_time;
 
 protected:
  Scheduler() : idling(false) {}
@@ -42,6 +43,8 @@ public:
 
   /* Zum naechsten Thread wechseln */
   void resume();
+
+  unsigned long getIdleTime();
 };
 
 #endif

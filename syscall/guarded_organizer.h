@@ -30,6 +30,7 @@ public:
   void exit();
   void kill(Thread &that);
   void resume();
+  unsigned long getLastIdle();
 };
 
 #endif

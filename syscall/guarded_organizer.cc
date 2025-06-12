@@ -45,3 +45,8 @@ void Guarded_Organizer::resume() {
 
   Organizer::resume();
 }
+
+unsigned long Guarded_Organizer::getLastIdle() {
+  Secure sec;
+  return Scheduler::getIdleTime();
+}
